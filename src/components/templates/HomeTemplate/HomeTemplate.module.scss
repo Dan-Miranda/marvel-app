@@ -1,0 +1,17 @@
+.HomeTemplateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  max-width: 1040px;
+  padding: 48px;
+
+  background-color: #CCF4FE;
+
+  @media screen and (max-width: 425px) {
+    & {
+      padding: 32px 16px;
+    }
+  }
+}
