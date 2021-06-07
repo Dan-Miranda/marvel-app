@@ -1,31 +1,34 @@
+import { useRouter } from 'next/dist/client/router';
 import React, { useEffect, useState } from 'react';
-
+import Link from 'next/link';
 import styles from './PaginationButtons.module.scss';
 
 interface Props {
-  pageState: [page: number, setPage: (value: number) => void],
-  perPage: number,
-  lastPage: number,
+  // pageState: [page: number, setPage: (value: number) => void],
+  totalPages: number,
 }
 
 const PaginationButtons: React.FC<Props> = (props) => {
-  const { perPage, lastPage, pageState } = { ...props };
+  const { totalPages } = { ...props };
   const [buttons, setButtons] = useState<Array<JSX.Element>>([]);
-  const [page, setPage] = pageState;
+  const [currentPage, setCurrentPage] = useState();
+
+  const router = useRouter();
 
   const handlePage = (page: number) => {
-    setPage(page);
+    // setPage(page);
+    router.push(`/?page=${page}`);
   };
 
   const previous = () => {
-    if (page - 1 > 0) {
-      handlePage(page - 1);
+    if (Number(router.query.page) - 1 > 0) {
+      handlePage(Number(router.query.page) - 1);
     }
   };
 
   const next = () => {
-    if (page <= lastPage) {
-      handlePage(page + 1);
+    if (Number(router.query.page) + 1 <= totalPages) {
+      handlePage(Number(router.query.page) + 1);
     }
   };
 
@@ -34,21 +37,22 @@ const PaginationButtons: React.FC<Props> = (props) => {
   };
 
   const goToLastPage = () => {
-    handlePage(lastPage);
+    handlePage(totalPages);
   };
 
-  const genereteButtonsPagination = () => {
+  const generateButtonsPagination = () => {
     const buttonList = [];
-    let pageIndex = page;
-    for (let i = 0; i <= perPage; i += 1) {
+    let pageIndex = Number(router.query.page) || 1;
+    for (let i = 0; i < 10 && pageIndex <= totalPages; i += 1) {
       buttonList.push((
-        <button
-          type="button"
-          onClick={() => handlePage(i)}
-          className={pageIndex === page ? 'PaginationButtonFocus' : ''}
-        >
-          {pageIndex}
-        </button>
+        <Link href={`/?page=${pageIndex}`}>
+          <button
+            type="button"
+            style={{ background: Number(router.query.page) === pageIndex ? '#D93D27' : '' }}
+          >
+            {pageIndex}
+          </button>
+        </Link>
       ));
       pageIndex += 1;
     }
@@ -57,8 +61,8 @@ const PaginationButtons: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    genereteButtonsPagination();
-  }, []);
+    generateButtonsPagination();
+  }, [Number(router.query.page)]);
 
   return (
     <div className={styles.PaginationContainer}>

@@ -20,8 +20,6 @@ class MarvelServices {
         { params },
       );
 
-      console.log('response', response.data);
-
       return response.data;
     } catch (error) {
       console.error('Get heroes failed:', error);
